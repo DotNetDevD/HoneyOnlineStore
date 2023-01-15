@@ -1,9 +1,11 @@
 ﻿using HoneyOnlineStore.DAL;
 using HoneyOnlineStore.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HoneyOnlineStore.Controllers
 {
+    [Authorize(Roles = WebConstant.AdminRole)]
     public class ApplicationTypeController : Controller
     {
         private readonly ApplicationDbContext _db;

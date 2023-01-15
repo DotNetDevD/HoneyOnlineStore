@@ -31,7 +31,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item dropdown">
+                        @if (User.IsInRole(WebConstant.AdminRole))
+                        {
+                           <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Content Managment
                             </a>
@@ -42,7 +44,8 @@
                                 <li><hr class="dropdown-divider"></li>
                                 <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register new Admin</a>
                             </ul>
-                        </li>
+                        </li> 
+                        }
                         <li>
                             @*display shopping cart*@
                             @if (HttpContextAccessor.HttpContext.Session.Get<List<ShoppingCart>>(WebConstant.SessionCart) != null)

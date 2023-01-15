@@ -1,12 +1,14 @@
 ﻿using HoneyOnlineStore.DAL;
 using HoneyOnlineStore.Models;
 using HoneyOnlineStore.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace HoneyOnlineStore.Controllers
 {
+    [Authorize(Roles = WebConstant.AdminRole)]
     public class ProductController : Controller
     {
         private readonly ApplicationDbContext _db;

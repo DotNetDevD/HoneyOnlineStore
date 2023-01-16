@@ -88,6 +88,10 @@ namespace HoneyOnlineStore.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public IActionResult Information()
+        {
+            return View();
+        }
         public IActionResult Privacy()
         {
             return View();

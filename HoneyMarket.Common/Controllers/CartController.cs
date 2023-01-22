@@ -1,6 +1,6 @@
 ﻿using HoneyMarket.Utility;
 using HoneyOnlineStore.DAL;
-using HoneyOnlineStore.Extensions;
+using HoneyMarket.Utility.Extensions;
 using HoneyOnlineStore.Models;
 using HoneyOnlineStore.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;

@@ -1,4 +1,4 @@
-﻿namespace HoneyOnlineStore
+﻿namespace HoneyMarket.Utility
 {
     public static class WebConstant
     {

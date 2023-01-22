@@ -24,4 +24,9 @@
     <Folder Include="Orders\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\HoneyMarket.Utility\HoneyMarket.Utility.csproj" />
+    <ProjectReference Include="..\HoneyMarket.Utility\HoneyMarket.Utility.csproj" />
+  </ItemGroup>
+
 </Project>

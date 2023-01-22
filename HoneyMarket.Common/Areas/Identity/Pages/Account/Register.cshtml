@@ -1,7 +1,7 @@
 ﻿@page
 @model RegisterModel
 
-@if (User.IsInRole(HoneyOnlineStore.WebConstant.AdminRole))
+@if (User.IsInRole(HoneyMarket.Utility.WebConstant.AdminRole))
 {
     <h1>Register new Admin</h1>
 }
@@ -42,7 +42,7 @@ else
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
             <hr />
-            @if (User.IsInRole(HoneyOnlineStore.WebConstant.AdminRole))
+            @if (User.IsInRole(HoneyMarket.Utility.WebConstant.AdminRole))
             {
                 <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-warning">Register Admin User</button>
             }

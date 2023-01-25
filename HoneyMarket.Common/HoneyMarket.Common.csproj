@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\HoneyMarket.Models\HoneyMarket.Models.csproj" />
     <ProjectReference Include="..\HoneyMarket.Utility\HoneyMarket.Utility.csproj" />
   </ItemGroup>
 

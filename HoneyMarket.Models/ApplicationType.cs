@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace HoneyOnlineStore.Models
+namespace HoneyMarket.Models
 {
     public class ApplicationType
     {

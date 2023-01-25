@@ -1,4 +1,4 @@
-namespace HoneyOnlineStore.Models
+namespace HoneyMarket.Models
 {
     public class ErrorViewModel
     {

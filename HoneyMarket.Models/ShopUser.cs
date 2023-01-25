@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace HoneyOnlineStore.Models
+namespace HoneyMarket.Models
 {
     public class ShopUser : IdentityUser
     {

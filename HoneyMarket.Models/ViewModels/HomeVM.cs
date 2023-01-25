@@ -1,4 +1,4 @@
-﻿namespace HoneyOnlineStore.Models.ViewModels
+﻿namespace HoneyMarket.Models.ViewModels
 {
     public class HomeVM
     {

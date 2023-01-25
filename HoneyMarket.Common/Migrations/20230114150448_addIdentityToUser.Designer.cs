@@ -25,7 +25,7 @@ namespace HoneyOnlineStore.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("HoneyOnlineStore.Models.ApplicationType", b =>
+            modelBuilder.Entity("HoneyMarket.Models.ApplicationType", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -42,7 +42,7 @@ namespace HoneyOnlineStore.Migrations
                     b.ToTable("ApplicationTypes");
                 });
 
-            modelBuilder.Entity("HoneyOnlineStore.Models.Category", b =>
+            modelBuilder.Entity("HoneyMarket.Models.Category", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -62,7 +62,7 @@ namespace HoneyOnlineStore.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("HoneyOnlineStore.Models.Product", b =>
+            modelBuilder.Entity("HoneyMarket.Models.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -303,15 +303,15 @@ namespace HoneyOnlineStore.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("HoneyOnlineStore.Models.Product", b =>
+            modelBuilder.Entity("HoneyMarket.Models.Product", b =>
                 {
-                    b.HasOne("HoneyOnlineStore.Models.ApplicationType", "ApplicationType")
+                    b.HasOne("HoneyMarket.Models.ApplicationType", "ApplicationType")
                         .WithMany()
                         .HasForeignKey("ApplicationTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HoneyOnlineStore.Models.Category", "Category")
+                    b.HasOne("HoneyMarket.Models.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)

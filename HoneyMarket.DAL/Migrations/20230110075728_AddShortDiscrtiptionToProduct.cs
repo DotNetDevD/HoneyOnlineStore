@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace HoneyOnlineStore.Migrations
+namespace HoneyMarket.DAL.Migrations
 {
     /// <inheritdoc />
     public partial class AddShortDiscrtiptionToProduct : Migration

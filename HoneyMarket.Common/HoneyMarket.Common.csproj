@@ -19,12 +19,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Migrations\" />
     <Folder Include="wwwroot\images\product\" />
     <Folder Include="Orders\" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\HoneyMarket.DAL\HoneyMarket.DAL.csproj" />
     <ProjectReference Include="..\HoneyMarket.Models\HoneyMarket.Models.csproj" />
     <ProjectReference Include="..\HoneyMarket.Utility\HoneyMarket.Utility.csproj" />
   </ItemGroup>

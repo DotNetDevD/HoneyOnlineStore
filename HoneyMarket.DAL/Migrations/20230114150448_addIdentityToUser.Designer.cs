@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace HoneyOnlineStore.Migrations
+namespace HoneyMarket.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20230114150448_addIdentityToUser")]

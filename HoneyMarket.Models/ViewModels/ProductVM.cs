@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace HoneyOnlineStore.Models.ViewModels
+namespace HoneyMarket.Models.ViewModels
 {
     public class ProductVM
     {

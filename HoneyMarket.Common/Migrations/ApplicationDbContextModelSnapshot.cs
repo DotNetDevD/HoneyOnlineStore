@@ -22,7 +22,7 @@ namespace HoneyOnlineStore.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("HoneyOnlineStore.Models.ApplicationType", b =>
+            modelBuilder.Entity("HoneyMarket.Models.ApplicationType", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -39,7 +39,7 @@ namespace HoneyOnlineStore.Migrations
                     b.ToTable("ApplicationTypes");
                 });
 
-            modelBuilder.Entity("HoneyOnlineStore.Models.Category", b =>
+            modelBuilder.Entity("HoneyMarket.Models.Category", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -59,7 +59,7 @@ namespace HoneyOnlineStore.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("HoneyOnlineStore.Models.CustomerOrder", b =>
+            modelBuilder.Entity("HoneyMarket.Models.CustomerOrder", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -84,7 +84,7 @@ namespace HoneyOnlineStore.Migrations
                     b.ToTable("CustomerOrders");
                 });
 
-            modelBuilder.Entity("HoneyOnlineStore.Models.Product", b =>
+            modelBuilder.Entity("HoneyMarket.Models.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -327,7 +327,7 @@ namespace HoneyOnlineStore.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("HoneyOnlineStore.Models.ShopUser", b =>
+            modelBuilder.Entity("HoneyMarket.Models.ShopUser", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
@@ -338,9 +338,9 @@ namespace HoneyOnlineStore.Migrations
                     b.HasDiscriminator().HasValue("ShopUser");
                 });
 
-            modelBuilder.Entity("HoneyOnlineStore.Models.CustomerOrder", b =>
+            modelBuilder.Entity("HoneyMarket.Models.CustomerOrder", b =>
                 {
-                    b.HasOne("HoneyOnlineStore.Models.Product", "Products")
+                    b.HasOne("HoneyMarket.Models.Product", "Products")
                         .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -349,15 +349,15 @@ namespace HoneyOnlineStore.Migrations
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("HoneyOnlineStore.Models.Product", b =>
+            modelBuilder.Entity("HoneyMarket.Models.Product", b =>
                 {
-                    b.HasOne("HoneyOnlineStore.Models.ApplicationType", "ApplicationType")
+                    b.HasOne("HoneyMarket.Models.ApplicationType", "ApplicationType")
                         .WithMany()
                         .HasForeignKey("ApplicationTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HoneyOnlineStore.Models.Category", "Category")
+                    b.HasOne("HoneyMarket.Models.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)

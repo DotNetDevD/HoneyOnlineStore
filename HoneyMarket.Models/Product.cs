@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace HoneyOnlineStore.Models
+namespace HoneyMarket.Models
 {
     public class Product
     {

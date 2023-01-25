@@ -2,8 +2,8 @@
 using HoneyMarket.Utility.Extensions;
 using HoneyOnlineStore.DAL;
 using HoneyMarket.Utility.Extensions;
-using HoneyOnlineStore.Models;
-using HoneyOnlineStore.Models.ViewModels;
+using HoneyMarket.Models;
+using HoneyMarket.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;

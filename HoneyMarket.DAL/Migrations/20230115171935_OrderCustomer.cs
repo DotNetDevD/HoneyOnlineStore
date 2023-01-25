@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace HoneyOnlineStore.Migrations
+namespace HoneyMarket.DAL.Migrations
 {
     public partial class OrderCustomer : Migration
     {

@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace HoneyOnlineStore.Migrations
+namespace HoneyMarket.DAL.Migrations
 {
     public partial class addFullNameModel : Migration
     {

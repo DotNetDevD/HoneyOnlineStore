@@ -8,11 +8,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace HoneyOnlineStore.Migrations
+namespace HoneyMarket.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230110075728_AddShortDiscrtiptionToProduct")]
-    partial class AddShortDiscrtiptionToProduct
+    [Migration("20230110063746_first migration")]
+    partial class firstmigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -87,9 +87,6 @@ namespace HoneyOnlineStore.Migrations
 
                     b.Property<double>("Price")
                         .HasColumnType("float");
-
-                    b.Property<string>("ShortDiscription")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

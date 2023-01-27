@@ -1,25 +1,24 @@
 ﻿using HoneyMarket.Utility;
-using HoneyOnlineStore.DAL;
 using HoneyMarket.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using HoneyMarket.DAL.Repository.IRepository;
 
 namespace HoneyOnlineStore.Controllers
 {
     [Authorize(Roles = WebConstant.AdminRole)]
     public class CategoryController : Controller
     {
-        private readonly ApplicationDbContext _db;
-        private readonly IWebHostEnvironment _webHostEnvironment;
-        public CategoryController(ApplicationDbContext applicationDbContext, IWebHostEnvironment webHostEnvironment)
+        private readonly ICategoryRepository _carRepo;
+
+        public CategoryController(ICategoryRepository catRepo)
         {
-            _db = applicationDbContext;
-            _webHostEnvironment = webHostEnvironment;
+            _carRepo = catRepo;
         }
 
         public IActionResult Index()
         {
-            IEnumerable<Category> listCategories = _db.Categories;
+            IEnumerable<Category> listCategories = _carRepo.GetAll();
             return View(listCategories);
         }
 
@@ -35,8 +34,8 @@ namespace HoneyOnlineStore.Controllers
         {
             if (ModelState.IsValid)
             {
-                _db.Categories.Add(cat);
-                _db.SaveChanges();
+                _carRepo.Add(cat);
+                _carRepo.Save();
                 return RedirectToAction("Index");
             }
             else
@@ -52,7 +51,7 @@ namespace HoneyOnlineStore.Controllers
             {
                 return NotFound();
             }
-            var cat = _db.Categories.Find(id);
+            var cat = _carRepo.Find(id);
             if (cat == null)
             {
                 return NotFound();
@@ -66,8 +65,8 @@ namespace HoneyOnlineStore.Controllers
         {
             if (ModelState.IsValid)
             {
-                _db.Categories.Update(cat);
-                _db.SaveChanges();
+                _carRepo.Update(cat);
+                _carRepo.Save();
                 return RedirectToAction("Index");
             }
             else
@@ -83,7 +82,7 @@ namespace HoneyOnlineStore.Controllers
             {
                 return NotFound();
             }
-            var cat = _db.Categories.Find(id);
+            var cat = _carRepo.Find(id);
             if (cat == null)
             {
                 return NotFound();
@@ -95,7 +94,7 @@ namespace HoneyOnlineStore.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeletePost(int? id)
         {
-            var cat = _db.Categories.Find(id);
+            var cat = _carRepo.Find(id);
             if (cat == null)
             {
                 return NotFound();
@@ -103,26 +102,11 @@ namespace HoneyOnlineStore.Controllers
             else
             {
                 //delete all product images connected with category 
-                var products = _db.Products.Where(i => i.CategoryId == cat.Id);
-                if (products != null)
-                {
-                    foreach(var product in products)
-                    {
-                        // find root of image
-                        string webRootPath = _webHostEnvironment.WebRootPath;
-                        string upload = webRootPath + WebConstant.ImagesPath;
-                        var imgFilePath = Path.Combine(upload, product.Image!);
-
-                        if (System.IO.File.Exists(imgFilePath))
-                        {
-                            System.IO.File.Delete(imgFilePath);
-                        }
-                    }
-                }
-                _db.Categories.Remove(cat);
-                _db.SaveChanges();
-                return RedirectToAction("Index");
+                _carRepo.DeleteBindImagesWithProduct(cat);
             }
+            _carRepo.Remove(cat);
+            _carRepo.Save();
+            return RedirectToAction("Index");
         }
     }
 }

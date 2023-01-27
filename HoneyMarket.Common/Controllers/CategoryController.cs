@@ -9,16 +9,16 @@ namespace HoneyOnlineStore.Controllers
     [Authorize(Roles = WebConstant.AdminRole)]
     public class CategoryController : Controller
     {
-        private readonly ICategoryRepository _carRepo;
+        private readonly ICategoryRepository _catRepo;
 
         public CategoryController(ICategoryRepository catRepo)
         {
-            _carRepo = catRepo;
+            _catRepo = catRepo;
         }
 
         public IActionResult Index()
         {
-            IEnumerable<Category> listCategories = _carRepo.GetAll();
+            IEnumerable<Category> listCategories = _catRepo.GetAll();
             return View(listCategories);
         }
 
@@ -34,8 +34,8 @@ namespace HoneyOnlineStore.Controllers
         {
             if (ModelState.IsValid)
             {
-                _carRepo.Add(cat);
-                _carRepo.Save();
+                _catRepo.Add(cat);
+                _catRepo.Save();
                 return RedirectToAction("Index");
             }
             else
@@ -51,7 +51,7 @@ namespace HoneyOnlineStore.Controllers
             {
                 return NotFound();
             }
-            var cat = _carRepo.Find(id);
+            var cat = _catRepo.Find(id);
             if (cat == null)
             {
                 return NotFound();
@@ -65,8 +65,8 @@ namespace HoneyOnlineStore.Controllers
         {
             if (ModelState.IsValid)
             {
-                _carRepo.Update(cat);
-                _carRepo.Save();
+                _catRepo.Update(cat);
+                _catRepo.Save();
                 return RedirectToAction("Index");
             }
             else
@@ -82,7 +82,7 @@ namespace HoneyOnlineStore.Controllers
             {
                 return NotFound();
             }
-            var cat = _carRepo.Find(id);
+            var cat = _catRepo.Find(id);
             if (cat == null)
             {
                 return NotFound();
@@ -94,7 +94,7 @@ namespace HoneyOnlineStore.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeletePost(int? id)
         {
-            var cat = _carRepo.Find(id);
+            var cat = _catRepo.Find(id);
             if (cat == null)
             {
                 return NotFound();
@@ -102,10 +102,10 @@ namespace HoneyOnlineStore.Controllers
             else
             {
                 //delete all product images connected with category 
-                _carRepo.DeleteBindImagesWithProduct(cat);
+                _catRepo.DeleteBindImagesWithProduct(cat);
             }
-            _carRepo.Remove(cat);
-            _carRepo.Save();
+            _catRepo.Remove(cat);
+            _catRepo.Save();
             return RedirectToAction("Index");
         }
     }

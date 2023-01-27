@@ -6,26 +6,27 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using HoneyMarket.DAL.Repository.IRepository;
 
 namespace HoneyOnlineStore.Controllers
 {
     [Authorize(Roles = WebConstant.AdminRole)]
     public class ProductController : Controller
     {
-        private readonly ApplicationDbContext _db;
-        //take root path
+        private readonly IProductRepository _prodRepo;
+       
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ProductController(ApplicationDbContext applicationDbContext, IWebHostEnvironment webHostEnvironment)
+        public ProductController(IProductRepository prodRepo, IWebHostEnvironment webHostEnvironment)
         {
-            _db = applicationDbContext;
+            _prodRepo = prodRepo;
             _webHostEnvironment = webHostEnvironment;
         }
         
-        public IActionResult Index()
+        public IActionResult Index() 
         {
             // eager loading instead of usting foreach
-            IEnumerable<Product> listProducts = _db.Products.Include(u => u.Category).Include(u => u.ApplicationType);
+            IEnumerable<Product> listProducts = _prodRepo.GetAll(includeProperties: "Category,ApplicationType");
 
             //foreach (var product in listProducts)
             //{
@@ -35,7 +36,6 @@ namespace HoneyOnlineStore.Controllers
 
             return View(listProducts);
         }
-
         
         [HttpGet]
         public IActionResult Upsert(int? id)
@@ -43,16 +43,8 @@ namespace HoneyOnlineStore.Controllers
             ProductVM productVM = new()
             {
                 Product = new(),
-                CategorySelectedList = _db.Categories.Select(i => new SelectListItem
-                {
-                    Text = i.Name,
-                    Value = i.Id.ToString()
-                }),
-                ApplicationTypeList = _db.ApplicationTypes.Select(i => new SelectListItem
-                {
-                    Text = i.Name,
-                    Value = i.Id.ToString()
-                })
+                CategorySelectedList = _prodRepo.GetAllDropDownList(WebConstant.CategoryName),
+                ApplicationTypeList = _prodRepo.GetAllDropDownList(WebConstant.ApplicationTypeName),
             };
 
             if (id == null)
@@ -62,7 +54,7 @@ namespace HoneyOnlineStore.Controllers
             }
             else
             {
-                productVM.Product = _db.Products.Find(id);
+                productVM.Product = _prodRepo.Find(id);
                 if (productVM.Product == null)
                 {
                     return NotFound();
@@ -96,13 +88,13 @@ namespace HoneyOnlineStore.Controllers
 
                     productVM.Product.Image = fileName + extension;
 
-                    _db.Products.Add(productVM.Product);
+                    _prodRepo.Add(productVM.Product);
                 }
                 else
                 {
                     //updating
                     //AsNotracking for no updating this object in database
-                    var objFromDb = _db.Products.AsNoTracking().FirstOrDefault(u => u.Id == productVM.Product.Id);
+                    var objFromDb = _prodRepo.FirstOrDefault(u => u.Id == productVM.Product.Id, isTracking:false);
 
                     //if we edit the images
                     if (files.Count > 0)
@@ -131,21 +123,13 @@ namespace HoneyOnlineStore.Controllers
                     {
                         productVM.Product.Image = objFromDb.Image;
                     }
-                    _db.Products.Update(productVM.Product);
+                    _prodRepo.Update(productVM.Product);
                 }
-                _db.SaveChanges();
+                _prodRepo.Save();
                 return RedirectToAction("Index");
             }
-            productVM.CategorySelectedList = _db.Categories.Select(i => new SelectListItem
-            {
-                Text = i.Name,
-                Value = i.Id.ToString()
-            });
-            productVM.ApplicationTypeList = _db.ApplicationTypes.Select(i => new SelectListItem
-            {
-                Text = i.Name,
-                Value = i.Id.ToString()
-            });
+            productVM.CategorySelectedList = _prodRepo.GetAllDropDownList(WebConstant.CategoryName);
+            productVM.ApplicationTypeList = _prodRepo.GetAllDropDownList(WebConstant.ApplicationTypeName);
             return View(productVM);
         }
 
@@ -157,7 +141,7 @@ namespace HoneyOnlineStore.Controllers
                 return NotFound();
             }
             // eager loading
-            Product product = _db.Products.Include(u => u.Category).Include(u => u.ApplicationType).FirstOrDefault(u => u.Id == id);
+            Product product = _prodRepo.FirstOrDefault(u => u.Id == id, includeProperties:"Category,ApplicationType");
             if (product == null)
             {
                 return NotFound();
@@ -170,7 +154,7 @@ namespace HoneyOnlineStore.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeletePost(int? id)
         {
-            var product = _db.Products.Find(id);
+            var product = _prodRepo.Find(id);
             if (product == null)
             {
                 return NotFound();
@@ -186,8 +170,8 @@ namespace HoneyOnlineStore.Controllers
                 {
                     System.IO.File.Delete(imgFilePath);
                 }
-                _db.Products.Remove(product);
-                _db.SaveChanges();
+                _prodRepo.Remove(product);
+                _prodRepo.Save();
                 return RedirectToAction("Index");
             }
         }

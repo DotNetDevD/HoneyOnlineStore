@@ -8,6 +8,8 @@ namespace HoneyMarket.Common.Extensions
         public static void AddRepositoryDependecies(this IServiceCollection services)
         {
             services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IApplicationTypeRepository, ApplicationTypeRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
         }
     }
 }

@@ -1,3 +1,4 @@
+using HoneyMarket.Common.Extensions;
 using HoneyOnlineStore.DAL;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +20,8 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
 
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddRepositoryDependecies();
+
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(20);
@@ -28,7 +31,6 @@ builder.Services.AddSession(options =>
 });
 
 var app = builder.Build();
-
 
 if (!app.Environment.IsDevelopment())
 {

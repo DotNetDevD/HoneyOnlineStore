@@ -1,25 +1,23 @@
 ﻿using HoneyMarket.Utility;
-using HoneyOnlineStore.DAL;
 using HoneyMarket.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using HoneyMarket.DAL.Repository.IRepository;
 
 namespace HoneyOnlineStore.Controllers
 {
     [Authorize(Roles = WebConstant.AdminRole)]
     public class ApplicationTypeController : Controller
     {
-        private readonly ApplicationDbContext _db;
-        private readonly IWebHostEnvironment _webHostEnvironment;
-        public ApplicationTypeController(ApplicationDbContext applicationDbContext, IWebHostEnvironment webHostEnvironment)
+        private readonly IApplicationTypeRepository _typeRepo;
+        public ApplicationTypeController(IApplicationTypeRepository typeRepo)
         {
-            _db = applicationDbContext;
-            _webHostEnvironment = webHostEnvironment;
+            _typeRepo = typeRepo;
         }
 
         public IActionResult Index()
         {
-            IEnumerable<ApplicationType> listApp = _db.ApplicationTypes;
+            IEnumerable<ApplicationType> listApp = _typeRepo.GetAll();
             return View(listApp);
         }
 
@@ -35,8 +33,8 @@ namespace HoneyOnlineStore.Controllers
         {
             if (ModelState.IsValid)
             {
-                _db.ApplicationTypes.Add(app);
-                _db.SaveChanges();
+                _typeRepo.Add(app);
+                _typeRepo.Save();
                 return RedirectToAction("Index");
             }
             else
@@ -51,7 +49,7 @@ namespace HoneyOnlineStore.Controllers
             {
                 return NotFound();
             }
-            var app = _db.ApplicationTypes.Find(id);
+            var app = _typeRepo.Find(id);
             if (app == null)
             {
                 return NotFound();
@@ -65,8 +63,8 @@ namespace HoneyOnlineStore.Controllers
         {
             if (ModelState.IsValid)
             {
-                _db.ApplicationTypes.Update(app);
-                _db.SaveChanges();
+                _typeRepo.Update(app);
+                _typeRepo.Save();
                 return RedirectToAction("Index");
             }
             else
@@ -82,7 +80,7 @@ namespace HoneyOnlineStore.Controllers
             {
                 return NotFound();
             }
-            var app = _db.ApplicationTypes.Find(id);
+            var app = _typeRepo.Find(id);
             if (app == null)
             {
                 return NotFound();
@@ -94,7 +92,7 @@ namespace HoneyOnlineStore.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeletePost(int? id)
         {
-            var app = _db.ApplicationTypes.Find(id);
+            var app = _typeRepo.Find(id);
             if (app == null)
             {
                 return NotFound();
@@ -102,26 +100,11 @@ namespace HoneyOnlineStore.Controllers
             else
             {
                 //delete all product images connected with applicationType 
-                var products = _db.Products.Where(i => i.ApplicationTypeId == app.Id);
-                if (products != null)
-                {
-                    foreach (var product in products)
-                    {
-                        // find root of image
-                        string webRootPath = _webHostEnvironment.WebRootPath;
-                        string upload = webRootPath + WebConstant.ImagesPath;
-                        var imgFilePath = Path.Combine(upload, product.Image!);
-
-                        if (System.IO.File.Exists(imgFilePath))
-                        {
-                            System.IO.File.Delete(imgFilePath);
-                        }
-                    }
-                }
-                _db.ApplicationTypes.Remove(app);
-                _db.SaveChanges();
-                return RedirectToAction("Index");
+                _typeRepo.DeleteBindImagesWithProduct(app);
             }
+            _typeRepo.Remove(app);
+            _typeRepo.Save();
+            return RedirectToAction("Index");
         }
     }
 }

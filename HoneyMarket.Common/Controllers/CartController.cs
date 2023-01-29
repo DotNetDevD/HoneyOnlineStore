@@ -117,11 +117,11 @@ namespace HoneyOnlineStore.Controllers
             }
             _userOrderInquiryDetailRepo.Save();
 
-            //Guid jsonOrderId = Guid.NewGuid();
-            //using (FileStream fs = new FileStream($@"Orders\{jsonOrderId}.json", FileMode.OpenOrCreate))
-            //{
-            //    await JsonSerializer.SerializeAsync<UserOrderInquiryDetail>(fs, userOrderInquiryDetail);
-            //}
+            Guid jsonOrderId = Guid.NewGuid();
+            using (FileStream fs = new FileStream($@"Orders\{jsonOrderId}.json", FileMode.OpenOrCreate))
+            {
+                await JsonSerializer.SerializeAsync<ProductUserVM>(fs, ProductUserVM);
+            }
 
             return RedirectToAction(nameof(InquiryConfirmation));
         }

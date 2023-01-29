@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Text.Json;
 using HoneyMarket.DAL.Repository.IRepository;
-using NToastNotify;
 
 namespace HoneyOnlineStore.Controllers
 {
@@ -19,21 +18,19 @@ namespace HoneyOnlineStore.Controllers
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IProductRepository _productRepository;
         private readonly IShopUserRepository _shopUserRepo;
-        private readonly IToastNotification _toast;
 
         //binding post request
         [BindProperty]
         public ProductUserVM ProductUserVM { get; set; }
         public CartController(IWebHostEnvironment webHostEnvironment, IProductRepository productRepo,
             IUserOrderInquiryDetailRepository userOrderInquiryDetailRepo, IUserOrderInquiryHeaderRepository userOrderInquiryHeaderRepo,
-            IShopUserRepository shopUserRepo, IToastNotification toast)
+            IShopUserRepository shopUserRepo)
         {
             _webHostEnvironment = webHostEnvironment;
             _productRepository = productRepo;
             _userOrderInquiryDetailRepo = userOrderInquiryDetailRepo;
             _userOrderInquiryHeaderRepo = userOrderInquiryHeaderRepo;
             _shopUserRepo = shopUserRepo;
-            _toast = toast;
         }
 
         [HttpGet]
@@ -120,12 +117,11 @@ namespace HoneyOnlineStore.Controllers
             }
             _userOrderInquiryDetailRepo.Save();
 
-            Guid jsonOrderId = Guid.NewGuid();
-            using (FileStream fs = new FileStream($@"Orders\{jsonOrderId}.json", FileMode.OpenOrCreate))
-            {
-                await JsonSerializer.SerializeAsync<ProductUserVM>(fs, ProductUserVM);
-            }
-            _toast.AddSuccessToastMessage("Order added seccussful!");
+            //Guid jsonOrderId = Guid.NewGuid();
+            //using (FileStream fs = new FileStream($@"Orders\{jsonOrderId}.json", FileMode.OpenOrCreate))
+            //{
+            //    await JsonSerializer.SerializeAsync<UserOrderInquiryDetail>(fs, userOrderInquiryDetail);
+            //}
 
             return RedirectToAction(nameof(InquiryConfirmation));
         }

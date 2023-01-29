@@ -12,6 +12,5 @@ namespace HoneyMarket.Models
         public int ProductId { get; set; }
         [ForeignKey("ProductId")]
         public virtual Product? Products { get; set; }
-
     }
 }

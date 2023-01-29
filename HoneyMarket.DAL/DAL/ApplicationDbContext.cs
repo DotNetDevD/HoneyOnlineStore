@@ -15,5 +15,7 @@ namespace HoneyOnlineStore.DAL
         public DbSet<Product> Products { get; set; }
         public DbSet<ShopUser> ShopUsers { get; set; }
         public DbSet<CustomerOrder> CustomerOrders { get; set; }
+        public DbSet<UserOrderInquiryDetail> UserOrderInquiryDetails { get; set; }
+        public DbSet<UserOrderInquiryHeader> UserOrderInquiryHeader { get; set; }
     }
 }

@@ -17,7 +17,7 @@ namespace HoneyMarket.DAL.Repository
 
         public IEnumerable<SelectListItem> GetAllDropDownList(string obj)
         {
-            if(obj == WebConstant.ApplicationTypeName)
+            if (obj == WebConstant.ApplicationTypeName)
             {
                 return _db.ApplicationTypes.Select(i => new SelectListItem
                 {
@@ -25,7 +25,7 @@ namespace HoneyMarket.DAL.Repository
                     Value = i.Id.ToString()
                 });
             }
-            if(obj == WebConstant.CategoryName)
+            if (obj == WebConstant.CategoryName)
             {
                 return _db.Categories.Select(i => new SelectListItem
                 {
@@ -40,7 +40,5 @@ namespace HoneyMarket.DAL.Repository
         {
             _db.Products.Update(product);
         }
-
-      
     }
 }

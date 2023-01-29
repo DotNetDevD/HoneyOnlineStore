@@ -4,7 +4,6 @@ using HoneyMarket.Utility.Extensions;
 using HoneyMarket.Models;
 using HoneyMarket.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Text.Json;
@@ -16,16 +15,14 @@ namespace HoneyOnlineStore.Controllers
     {
         private readonly ApplicationDbContext _db;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly IEmailSender _emailSender;
 
         //binding post request
         [BindProperty]
         public ProductUserVM ProductUserVM { get; set; }
-        public CartController(ApplicationDbContext db, IWebHostEnvironment webHostEnvironment, IEmailSender emailSender)
+        public CartController(ApplicationDbContext db, IWebHostEnvironment webHostEnvironment)
         {
             _db = db;
             _webHostEnvironment = webHostEnvironment;
-            _emailSender = emailSender;
         }
         [HttpGet]
         public IActionResult Index()

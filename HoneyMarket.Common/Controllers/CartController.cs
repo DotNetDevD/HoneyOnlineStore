@@ -1,5 +1,4 @@
 ﻿using HoneyMarket.Utility;
-using HoneyOnlineStore.DAL;
 using HoneyMarket.Utility.Extensions;
 using HoneyMarket.Models;
 using HoneyMarket.Models.ViewModels;
@@ -7,27 +6,36 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Text.Json;
+using HoneyMarket.DAL.Repository.IRepository;
 
 namespace HoneyOnlineStore.Controllers
 {
     [Authorize]
     public class CartController : Controller
     {
-        private readonly ApplicationDbContext _db;
+        private readonly IUserOrderInquiryDetailRepository _userOrderInquiryDetailRepo;
+        private readonly IUserOrderInquiryHeaderRepository _userOrderInquiryHeaderRepo;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IProductRepository _productRepository;
+        private readonly IShopUserRepository _shopUserRepo;
 
         //binding post request
         [BindProperty]
         public ProductUserVM ProductUserVM { get; set; }
-        public CartController(ApplicationDbContext db, IWebHostEnvironment webHostEnvironment)
+        public CartController(IWebHostEnvironment webHostEnvironment, IProductRepository productRepo,
+            IUserOrderInquiryDetailRepository userOrderInquiryDetailRepo, IUserOrderInquiryHeaderRepository userOrderInquiryHeaderRepo,
+            IShopUserRepository shopUserRepo)
         {
-            _db = db;
             _webHostEnvironment = webHostEnvironment;
+            _productRepository = productRepo;
+            _userOrderInquiryDetailRepo = userOrderInquiryDetailRepo;
+            _userOrderInquiryHeaderRepo = userOrderInquiryHeaderRepo;
+            _shopUserRepo = shopUserRepo;
         }
+
         [HttpGet]
         public IActionResult Index()
         {
-
             List<ShoppingCart> shoppingCartList = new List<ShoppingCart>();
             if (HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstant.SessionCart) != null
                 && HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstant.SessionCart).Count() > 0)
@@ -37,9 +45,9 @@ namespace HoneyOnlineStore.Controllers
             }
             //all product in cart
             List<int> prodInCart = shoppingCartList.Select(i => i.ProductId).ToList();
-            //list of product in cart
-            IEnumerable<Product> prodList = _db.Products.Where(u => prodInCart.Contains(u.Id));
-
+            //list of product in cart                   .Where(u => prodInCart.Contains(u.Id));
+            IEnumerable<Product> prodList = _productRepository.GetAll(u => prodInCart.Contains(u.Id));
+                
             return View(prodList);
         }
 
@@ -48,9 +56,9 @@ namespace HoneyOnlineStore.Controllers
         [ActionName("Index")]
         public IActionResult IndexPost()
         {
-
             return RedirectToAction(nameof(Summary));
         }
+
         public IActionResult Summary()
         {
             //identification user by id
@@ -67,11 +75,11 @@ namespace HoneyOnlineStore.Controllers
             }
 
             List<int> prodInCart = shoppingCartList.Select(i => i.ProductId).ToList();
-            IEnumerable<Product> prodList = _db.Products.Where(u => prodInCart.Contains(u.Id));
+            IEnumerable<Product> prodList = _productRepository.GetAll(u => prodInCart.Contains(u.Id));
 
             ProductUserVM = new ProductUserVM()
             {
-                ShopUser = _db.ShopUsers.FirstOrDefault(u => u.Id == claim.Value),
+                ShopUser = _shopUserRepo.FirstOrDefault(u => u.Id == claim.Value),
                 ProductList = prodList.ToList()
             };
 
@@ -82,26 +90,42 @@ namespace HoneyOnlineStore.Controllers
         [ActionName("Summary")]
         public async Task<IActionResult> SummaryPost(ProductUserVM ProductUserVM)
         {
-            Guid jsonOrderId = Guid.NewGuid();
-            foreach (Product prod in ProductUserVM.ProductList)
+            var claimsIdentity = (ClaimsIdentity)User.Identity; // ref for user in current session
+            // claim contains Id user 
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            
+            UserOrderInquiryHeader userOrderInquiryHeader = new()
             {
-                CustomerOrder customerOrder = new()
-                {
-                    CustomerEmail = ProductUserVM.ShopUser.Email,
-                    JsonId = jsonOrderId,
-                    ProductId = prod.Id
-                };
-                _db.CustomerOrders.Add(customerOrder);
-                _db.SaveChanges();
-            }
+                ShopUserId = claim.Value,
+                FullName = ProductUserVM.ShopUser.FullName,
+                Email = ProductUserVM.ShopUser.Email,
+                PhoneNumber = ProductUserVM.ShopUser.PhoneNumber,
+                InquiryDate = DateTime.Now
+            };
 
-            using (FileStream fs = new FileStream($@"Orders\{jsonOrderId}.json", FileMode.OpenOrCreate))
+            _userOrderInquiryHeaderRepo.Add(userOrderInquiryHeader);
+            _userOrderInquiryHeaderRepo.Save();
+
+            foreach (var prod in ProductUserVM.ProductList)
             {
-                await JsonSerializer.SerializeAsync<ProductUserVM>(fs, ProductUserVM);
+                UserOrderInquiryDetail userOrderInquiryDetail = new()
+                {
+                    UserOrderInquiryId = userOrderInquiryHeader.Id,
+                    ProductId = prod.Id,
+                };
+                _userOrderInquiryDetailRepo.Add(userOrderInquiryDetail);
             }
+            _userOrderInquiryDetailRepo.Save();
+
+            //Guid jsonOrderId = Guid.NewGuid();
+            //using (FileStream fs = new FileStream($@"Orders\{jsonOrderId}.json", FileMode.OpenOrCreate))
+            //{
+            //    await JsonSerializer.SerializeAsync<UserOrderInquiryDetail>(fs, userOrderInquiryDetail);
+            //}
 
             return RedirectToAction(nameof(InquiryConfirmation));
         }
+
         public IActionResult InquiryConfirmation()
         {
             HttpContext.Session.Clear();
@@ -110,7 +134,6 @@ namespace HoneyOnlineStore.Controllers
 
         public IActionResult Remove(int id)
         {
-
             List<ShoppingCart> shoppingCartList = new List<ShoppingCart>();
             if (HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstant.SessionCart) != null
                 && HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WebConstant.SessionCart).Count() > 0)

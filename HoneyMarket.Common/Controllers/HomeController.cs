@@ -1,31 +1,31 @@
 ﻿using HoneyMarket.Utility;
 using HoneyMarket.Utility.Extensions;
-using HoneyOnlineStore.DAL;
-using HoneyMarket.Utility.Extensions;
 using HoneyMarket.Models;
 using HoneyMarket.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using HoneyMarket.DAL.Repository.IRepository;
 
 namespace HoneyOnlineStore.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly ApplicationDbContext _db;
+        private readonly IProductRepository _productRepo;
+        private readonly ICategoryRepository _categoryRepo;
 
-        public HomeController(ILogger<HomeController> logger, ApplicationDbContext db)
+        public HomeController(ILogger<HomeController> logger, ICategoryRepository categoryRepo, IProductRepository productRepo)
         {
             _logger = logger;
-            _db = db;
+            _categoryRepo = categoryRepo;
+            _productRepo = productRepo;
         }
         public IActionResult Index()
         {
             HomeVM homeVM = new()
             {
-                Products = _db.Products.Include(u => u.Category).Include(u => u.ApplicationType),
-                Categories = _db.Categories
+                Products = _productRepo.GetAll(includeProperties: "Category,ApplicationType"),
+                Categories = _categoryRepo.GetAll()
             };
             return View(homeVM);
         }
@@ -41,8 +41,9 @@ namespace HoneyOnlineStore.Controllers
             }
             DetailsVM detailsVM = new()
             {
-                Product = _db.Products.Include(u => u.Category).Include(u => u.ApplicationType)
-                .Where(u => u.Id == id).FirstOrDefault(),
+                //Product = _db.Products.Include(u => u.Category).Include(u => u.ApplicationType)
+                //.Where(u => u.Id == id).FirstOrDefault(),
+                Product = _productRepo.FirstOrDefault(u => u.Id == id, includeProperties: "Category,ApplicationType"),
                 IsExistInCard = false
             };
 

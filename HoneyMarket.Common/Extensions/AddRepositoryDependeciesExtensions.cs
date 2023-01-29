@@ -10,6 +10,9 @@ namespace HoneyMarket.Common.Extensions
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IApplicationTypeRepository, ApplicationTypeRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IUserOrderInquiryDetailRepository, UserOrderInquiryDetailRepository>();
+            services.AddScoped<IUserOrderInquiryHeaderRepository, UserOrderInquiryHeaderRepository>();
+            services.AddScoped<IShopUserRepository, ShopUserRepository>();
         }
     }
 }

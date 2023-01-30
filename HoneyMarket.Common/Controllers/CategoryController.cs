@@ -3,6 +3,7 @@ using HoneyMarket.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using HoneyMarket.DAL.Repository.IRepository;
+using NToastNotify;
 
 namespace HoneyOnlineStore.Controllers
 {
@@ -10,10 +11,11 @@ namespace HoneyOnlineStore.Controllers
     public class CategoryController : Controller
     {
         private readonly ICategoryRepository _catRepo;
-
-        public CategoryController(ICategoryRepository catRepo)
+        private readonly IToastNotification _toast;
+        public CategoryController(ICategoryRepository catRepo, IToastNotification toast)
         {
             _catRepo = catRepo;
+            _toast = toast;
         }
 
         public IActionResult Index()
@@ -36,10 +38,12 @@ namespace HoneyOnlineStore.Controllers
             {
                 _catRepo.Add(cat);
                 _catRepo.Save();
+                _toast.AddSuccessToastMessage("Category created successfully");
                 return RedirectToAction("Index");
             }
             else
             {
+                _toast.AddErrorToastMessage("Error with created new category");
                 return View(cat);
             }
         }
@@ -56,6 +60,7 @@ namespace HoneyOnlineStore.Controllers
             {
                 return NotFound();
             }
+            
             return View(cat);
         }
 
@@ -67,6 +72,8 @@ namespace HoneyOnlineStore.Controllers
             {
                 _catRepo.Update(cat);
                 _catRepo.Save();
+                _toast.AddSuccessToastMessage("Category edited successfully");
+
                 return RedirectToAction("Index");
             }
             else
@@ -106,6 +113,7 @@ namespace HoneyOnlineStore.Controllers
             }
             _catRepo.Remove(cat);
             _catRepo.Save();
+            _toast.AddSuccessToastMessage("Category deleted successfully");
             return RedirectToAction("Index");
         }
     }

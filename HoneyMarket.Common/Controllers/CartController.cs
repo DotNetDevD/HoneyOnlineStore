@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Text.Json;
 using HoneyMarket.DAL.Repository.IRepository;
+using NToastNotify;
 
 namespace HoneyOnlineStore.Controllers
 {
@@ -18,19 +19,21 @@ namespace HoneyOnlineStore.Controllers
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IProductRepository _productRepository;
         private readonly IShopUserRepository _shopUserRepo;
+        private readonly IToastNotification _toast;
 
         //binding post request
         [BindProperty]
         public ProductUserVM ProductUserVM { get; set; }
         public CartController(IWebHostEnvironment webHostEnvironment, IProductRepository productRepo,
             IUserOrderInquiryDetailRepository userOrderInquiryDetailRepo, IUserOrderInquiryHeaderRepository userOrderInquiryHeaderRepo,
-            IShopUserRepository shopUserRepo)
+            IShopUserRepository shopUserRepo, IToastNotification toast)
         {
             _webHostEnvironment = webHostEnvironment;
             _productRepository = productRepo;
             _userOrderInquiryDetailRepo = userOrderInquiryDetailRepo;
             _userOrderInquiryHeaderRepo = userOrderInquiryHeaderRepo;
             _shopUserRepo = shopUserRepo;
+            _toast = toast;
         }
 
         [HttpGet]
@@ -122,6 +125,7 @@ namespace HoneyOnlineStore.Controllers
             {
                 await JsonSerializer.SerializeAsync<ProductUserVM>(fs, ProductUserVM);
             }
+            _toast.AddSuccessToastMessage("Order added seccussful!");
 
             return RedirectToAction(nameof(InquiryConfirmation));
         }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HoneyMarket.DAL.Repository.IRepository;
+using NToastNotify;
 
 namespace HoneyOnlineStore.Controllers
 {
@@ -14,15 +15,16 @@ namespace HoneyOnlineStore.Controllers
     public class ProductController : Controller
     {
         private readonly IProductRepository _prodRepo;
-       
+        private readonly IToastNotification _toast;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ProductController(IProductRepository prodRepo, IWebHostEnvironment webHostEnvironment)
+        public ProductController(IProductRepository prodRepo, IWebHostEnvironment webHostEnvironment, IToastNotification toast)
         {
             _prodRepo = prodRepo;
             _webHostEnvironment = webHostEnvironment;
+            _toast = toast;
         }
-        
+
         public IActionResult Index() 
         {
             // eager loading instead of usting foreach
@@ -87,6 +89,7 @@ namespace HoneyOnlineStore.Controllers
                     }
 
                     productVM.Product.Image = fileName + extension;
+                    _toast.AddSuccessToastMessage("Item added to cart successful!");
 
                     _prodRepo.Add(productVM.Product);
                 }
@@ -149,7 +152,6 @@ namespace HoneyOnlineStore.Controllers
             return View(product);
         }
 
-
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeletePost(int? id)
@@ -157,6 +159,7 @@ namespace HoneyOnlineStore.Controllers
             var product = _prodRepo.Find(id);
             if (product == null)
             {
+                _toast.AddWarningToastMessage("Something go wrong");
                 return NotFound();
             }
             else
@@ -172,6 +175,8 @@ namespace HoneyOnlineStore.Controllers
                 }
                 _prodRepo.Remove(product);
                 _prodRepo.Save();
+                _toast.AddSuccessToastMessage("Item deleted successful!");
+
                 return RedirectToAction("Index");
             }
         }

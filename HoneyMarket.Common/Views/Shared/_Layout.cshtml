@@ -13,8 +13,7 @@
     <link rel="stylesheet" href="~/HoneyOnlineStore.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/fontawesome/css/all.css" asp-append-version="true" />
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.css" integrity="sha256-He3QEBKoL/nMXlVsoM7S2C2kjFQqS5L+mgA+F8LpG+U=" crossorigin="anonymous" />
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" />
     <link rel="stylesheet" href="https://cdn.syncfusion.com/ej2/material.css" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 </head>
@@ -51,6 +50,14 @@
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Index">Product</a>
                                     <li><hr class="dropdown-divider"></li>
                                     <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register new Admin</a>
+                                </ul>
+                            </li>
+                             <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Order Inquiry Managment
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="UserOrderInquiry" asp-action="Index">Order Inquiry</a>
                                 </ul>
                             </li>
                         }
@@ -93,9 +100,10 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.syncfusion.com/ej2/dist/ej2.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    @await Component.InvokeAsync("NToastNotify")
 </body>
 </html>

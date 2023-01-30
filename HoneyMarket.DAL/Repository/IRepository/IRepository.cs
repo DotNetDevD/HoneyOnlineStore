@@ -28,6 +28,8 @@ namespace HoneyMarket.DAL.Repository.IRepository
 
         void Remove(T entity);
 
+        public void RemoveRange(IEnumerable<T> entity);
+
         void Save();
     }
 }
